@@ -1,8 +1,3 @@
-import java.util.ArrayList;
-import java.util.Arrays;  
-import java.util.List;  
-
-
 public class Three {
     public static void main (String[] args){
         String[] input = new String[]{
@@ -1022,61 +1017,27 @@ public class Three {
             "01010"
         };
         // input = sample;
-        ArrayList<String> stillValidOxy = new ArrayList<String>(Arrays.asList(input));
-        ArrayList<String> stillValidCO = new ArrayList<String>(Arrays.asList(input));
-
+        String sofar = "";
+        String invert = "";
         for (int i = 0; i < input[0].length(); i++) {
-            if (stillValidOxy.size() ==1) {
-            } else {
-                int zeroes = 0;
-                for (String command: stillValidOxy) {
-                    if ('0' == command.charAt(i)){
-                        zeroes ++;
-                    }
+            int zeroes = 0;
+            for (String command: input) {
+                if ('0' == command.charAt(i)){
+                    zeroes ++;
                 }
-                if (zeroes > stillValidOxy.size()/2) {
-                    for (String command: input) {
-                        if ('1' == command.charAt(i)){
-                            stillValidOxy.remove(command);
-                        }     
-                    }
-                } else {
-                    for (String command: input) {
-                        if ('0' == command.charAt(i)){
-                            stillValidOxy.remove(command);
-                        } 
-                    }
-                }    
             }
-            if (stillValidCO.size() ==1) {
-            } else {
-                int zeroes = 0;
-                for (String command: stillValidCO) {
-                    if ('0' == command.charAt(i)){
-                        zeroes ++;
-                    }
-                }
-                if (zeroes > stillValidCO.size()/2) {
-                    for (String command: input) {
-                        if ('0' == command.charAt(i)){
-                            stillValidCO.remove(command);
-                        } 
-                    }
-                } else {
-                    for (String command: input) {
-                        if ('1' == command.charAt(i)){
-                            stillValidCO.remove(command);
-                        } 
-                    }
-                }    
-            }
+            if (zeroes > input.length/2) {
+                sofar = sofar + "0";
+                invert = invert + "1";
 
+            } else {
+                sofar = sofar + "1";
+                invert = invert + "0";
+
+            }
         }
-        int oxy = Integer.parseInt(stillValidOxy.get(0), 2);
-        int co = Integer.parseInt(stillValidCO.get(0), 2);
-
         
-        System.out.println( co*oxy);
+        System.out.println(Integer.parseInt(sofar, 2) * Integer.parseInt(invert, 2));
 
     }
 }
