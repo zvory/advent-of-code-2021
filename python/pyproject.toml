@@ -6,6 +6,7 @@ authors = ["Alex Zvorygin <grafetu@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+advent-of-code-data = "^1.1.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
