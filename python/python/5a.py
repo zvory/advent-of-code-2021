@@ -24,6 +24,9 @@ def read_input():
 def board_size(vents):
     return tuple(map(lambda elt : max(elt)+1, list(zip(*[point for vent in vents for point in vent]))))
 
+def count_twos(ocean_floor):
+    return sum(map(lambda row : list(map(lambda cell : True if cell >= 2 else False, row)).count(True), ocean_floor))
+
 def apply_vent_to_floor(ocean_floor, vent):    
     # row vent
     if vent[0][1] == vent[1][1]:
@@ -33,22 +36,18 @@ def apply_vent_to_floor(ocean_floor, vent):
             ocean_floor[vent[0][1]][column] += 1
         return
 
-    # column vent
-    if vent[0][0] == vent[1][0]:
-        start_row = min(vent[0][1], vent[1][1])
-        end_row = max(vent[0][1], vent[1][1])+1
-        for row in range(start_row, end_row):
-            ocean_floor[row][vent[0][0]] += 1
-        return
-
-    # print(vent)
-    
-    # goes top left to bottom right
-    # 1,2 -> 4,5 
-    # 4,5 -> 1,2
     if (vent[0][0] < vent[1][0] and vent[0][1] < vent[1][1]) or (vent[0][0] > vent[1][0] and vent[0][1] > vent[1][1]):
+        # goes top left to bottom right
+        # 1,2 -> 4,5 
+        # 4,5 -> 1,2
         col_step_coefficient = 1
+    elif vent[0][0] == vent[1][0]:
+        # column vent
+        col_step_coefficient = 0
     else:
+        # goes from top right to bottom left
+        # 0,8 -> 8,0
+        # 8,0 -> 0,8
         col_step_coefficient = -1
 
     # make sure vent[0] is always higher
@@ -61,17 +60,11 @@ def apply_vent_to_floor(ocean_floor, vent):
     for index, row in enumerate(range(start_row, stop_row)):
         ocean_floor[row][vent[0][0]+index*col_step_coefficient] += 1
 
-def count_twos(ocean_floor):
-    return sum(map(lambda row : list(map(lambda cell : True if cell >= 2 else False, row)).count(True), ocean_floor))
-
 vents = read_input()
 width, height = board_size(vents)
-ocean_floor = [[0] * width for _ in range(height)] 
-
-for vent in vents:
-    apply_vent_to_floor(ocean_floor, vent)
+ocean_floor = [[0] * width for _ in range(height)]
+[apply_vent_to_floor(ocean_floor, vent) for vent in vents]
 
 print(count_twos(ocean_floor))
-
 # submit(count_twos(ocean_floor))
 
