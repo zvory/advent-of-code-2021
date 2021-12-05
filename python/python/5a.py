@@ -14,7 +14,8 @@ sample = [
     "0,0 -> 8,8",
     "5,5 -> 8,2"
 ]
-lines = sample
+# lines = sample
+# ans 21140
 
 def read_input():
     # how do i stop having to wrap things in list everywhere
@@ -22,9 +23,6 @@ def read_input():
 
 def board_size(vents):
     return tuple(map(lambda elt : max(elt)+1, list(zip(*[point for vent in vents for point in vent]))))
-
-def is_not_diagonal(vent):
-    return vent[0][0] != vent[1][0] and vent [1][0] != vent[1][1]
 
 def apply_vent_to_floor(ocean_floor, vent):    
     # row vent
@@ -48,58 +46,31 @@ def apply_vent_to_floor(ocean_floor, vent):
     # goes top left to bottom right
     # 1,2 -> 4,5 
     # 4,5 -> 1,2
-    # can cut clauses from vvvv
     if (vent[0][0] < vent[1][0] and vent[0][1] < vent[1][1]) or (vent[0][0] > vent[1][0] and vent[0][1] > vent[1][1]):
-        # swap the points if the second point is the top left one
-        if vent[0][0] > vent[1][0] and vent[0][1] > vent[1][1]:
-            vent = [vent[1], vent[0]]
-        
-        start_row = vent[0][1]
-        stop_row = vent[1][1]+1
-
-        for index, row in enumerate(range(start_row, stop_row)):
-            # print("setting row", row, "column", vent[0][0]+index)
-            ocean_floor[row][vent[0][0]+index] += 1
+        col_step_coefficient = 1
     else:
-        # goes top left to bottom right
-        # 8,0 -> 0,8
-        # 0,8 -> 8,0 
+        col_step_coefficient = -1
 
-        # swap the points if the second point is the top right one
-        if vent[0][1] > vent[1][1]:
-            vent = [vent[1], vent[0]]
+    # make sure vent[0] is always higher
+    if vent[0][1] > vent[1][1]:
+        vent = [vent[1], vent[0]]
+    
+    start_row = vent[0][1]
+    stop_row = vent[1][1]+1
 
-        start_row = vent[0][1]
-        stop_row = vent[1][1]+1
-
-        for index, row in enumerate(range(start_row, stop_row)):
-            # print("setting row", row, "column", vent[0][0]+index)
-            ocean_floor[row][vent[0][0]-index] += 1
-
-
-
+    for index, row in enumerate(range(start_row, stop_row)):
+        ocean_floor[row][vent[0][0]+index*col_step_coefficient] += 1
 
 def count_twos(ocean_floor):
-    count = 0
-    for row in ocean_floor:
-        for col in row:
-            if col >= 2:
-                count += 1
-    return count
-            
-    # pprint(list(map(lambda row : len(list(filter(lambda vent : vent >= 2, row))), ocean_floor)))
+    return sum(map(lambda row : list(map(lambda cell : True if cell >= 2 else False, row)).count(True), ocean_floor))
 
 vents = read_input()
 width, height = board_size(vents)
-
 ocean_floor = [[0] * width for _ in range(height)] 
-
-print(vents)
 
 for vent in vents:
     apply_vent_to_floor(ocean_floor, vent)
 
-pprint(ocean_floor)
 print(count_twos(ocean_floor))
 
 # submit(count_twos(ocean_floor))
